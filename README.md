@@ -1,2 +1,2 @@
 # DRLMM
-## Research about reinforce learning..
+## Research about reinforce learning.
