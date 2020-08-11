@@ -1,2 +1,3 @@
 # DRLMM
-##xxhuajun
+## Research about reinforce learning.
+###xxhuajun
