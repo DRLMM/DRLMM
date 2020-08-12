@@ -11,3 +11,5 @@ Welcome to our team -- DRLMM!
 3. git status命令可以让我们时刻掌握仓库当前的状态，哪些文件被修改过，但是还没有准备提交
 
 4. git diff <file> 可以查看有哪些不同呢？
+
+傻了吧，不知道怎么办了吧！
