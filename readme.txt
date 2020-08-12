@@ -12,4 +12,8 @@ Welcome to our team -- DRLMM!
 
 4. git diff <file> 可以查看有哪些不同呢？
 
-傻了吧，不知道怎么办了吧！
+5. HEAD指向的版本就是当前版本，因此，GIT允许我们在版本的历史之间穿梭，使用命令git reset --hard commit_id 或者HEAD^^ HEAD~100
+
+6.穿梭前，用git log可以查看提交历史，以便确定要回退到哪个版本。
+
+7. 要重返未来，用git reflog查看命令历史，以便确定要回到未来的哪个版本。
