@@ -17,3 +17,8 @@ Welcome to our team -- DRLMM!
 6.穿梭前，用git log可以查看提交历史，以便确定要回退到哪个版本。
 
 7. 要重返未来，用git reflog查看命令历史，以便确定要回到未来的哪个版本。
+
+8. 当远程分支上存在本地分支中不存在的提交，往往是多人协作开发过程中遇到的问题，可以先fetch再merge,也就是pull，再把远程分支上
+的提交合并到本地分支之后再push,也可以强行让本地分支覆盖远程分支，git push origin master -f
+
+9. 先git pull origin master --allow-unrelated-histories  再git push origin master
