@@ -8,12 +8,11 @@ class DataHandler(object):
         self.folder_path:str = folder_path  #文件夹地址
         self.day = -1   #记录当前读到第几天
         self.day_data = None  #当日数据
-        self.last_bar_index:int = -1  #当日最后一条bar的下标
-        self.last_bar = None  #最后一条bar的数据
+        self.curr_bar_index:int = -1  #当日最后一条bar的下标
+        self.curr_bar = None  #最后一条bar的数据
         self.history_bar:list = list()
         # 初始化数据
         self.read_next_day()
-        self.update_bar()
 
     def read_data(self,folder_path,day)->pd.DataFrame: 
         """
@@ -35,12 +34,12 @@ class DataHandler(object):
         """
         更新bar数据
         """
-        self.last_bar_index += 1  #bar下标加一
-        if self.last_bar_index >= len(self.day_data):  #如果当天的数据已读完则进入下一天
+        self.curr_bar_index += 1  #bar下标加一
+        if self.curr_bar_index >= len(self.day_data):  #如果当天的数据已读完则进入下一天
             self.read_next_day()  #读取下一天的内容
-            self.last_bar_index = 0  #将bar的下标归零
-        self.last_bar = self.day_data[self.last_bar_index:self.last_bar_index+1]  #将bar数据更新
-        self.history_bar.append(self.last_bar)
-        return self.last_bar
+            self.curr_bar_index = 0  #将bar的下标归零
+        self.curr_bar = self.day_data[self.curr_bar_index:self.curr_bar_index+1]  #将bar数据更新
+        self.history_bar.append(self.curr_bar)
+        return self.curr_bar
         
         
