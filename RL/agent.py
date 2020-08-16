@@ -122,14 +122,12 @@ class QLearn(agent):
         # CHHL
 
         # to_state
-        # agent.gamma
-        # agent.alpha
         # 不清楚
 
-        Q = agent.getQ(from_state, action),
-        F_term = agent.gamma * to_state.getPotential() - from_state.getPotential()
-        delta = reward + F_term + agent.gamma * agent.maxQ(to_state) - Q
-        agent.updateQ(agent.alpha * delta)
+        Q = self.getQ(from_state, action),
+        F_term = self.gamma * to_state.getPotential() - from_state.getPotential()
+        delta = reward + F_term + self.gamma * self.maxQ(to_state) - Q
+        self.updateQ(self.alpha * delta)
 
         return delta
 # =============================================================================
