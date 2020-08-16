@@ -91,8 +91,8 @@ class Exchange(object):
 
         for ask_order in ask_orders:
             if ask_order[PRICE] <= self.ticker:  #现价击穿卖单价
-                account += bid_order[PRICE] * bid_order[VOLUME]
-                position -= bid_order[VOLUME]
+                account += ask_order[PRICE] * ask_order[VOLUME]
+                position -= ask_order[VOLUME]
         # 将已成交的单移除
         bid_orders = [x for x in bid_orders if x[PRICE]>=self.ticker]
         ask_orders = [x for x in ask_orders if x[PRICE]<=self.ticker]
