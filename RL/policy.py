@@ -69,12 +69,32 @@ class epsilon_greedy(greedy_policy):
         random_number = np.random.rand()
         if( random_number < self.eps):
             np.random.seed(self.seed)
-            return np.random.randomint(0,self.N_ACTIONS-1)
+            return np.random.randint(0,self.N_ACTIONS-1)
         else:
-            return greedy_policy.sample(qs)
+            return greedy_policy.sample(self,qs)
     
     def descr(self):
         return self.eps
     
     def handle_terminal(self,episode):
         self.eps = self.eps_init * np.power(self.eps_floor/ self.eps_init, episode / self.eps_T)
+        
+        
+# =============================================================================
+# # 测试
+# if __name__ == '__main__':
+#     
+#     qs = [1,2,3,4,4]
+#     n_actions = 5
+#     eps = 0.7
+#     seed = 1056
+#     T = 2
+#     floor = 0.05
+#     
+#     greedy_action = greedy_policy(n_actions,seed).sample(qs)
+#     print(greedy_action)
+#     
+#     epsilon_greedy_action = epsilon_greedy(n_actions,eps,floor,T,seed).sample(qs)
+#     print(epsilon_greedy_action)
+# =============================================================================
+    
