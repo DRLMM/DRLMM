@@ -102,14 +102,20 @@ class Exchange(object):
         self.update_market()
         self.update_agent_state(self.breakdown)
 
-    def send_action(self,action,price=0,volume=0):
+    def send_action(self,action:str,price:float=0,volume:float=0):
         """
         发起动作
         """
         if action == "BID":
-            self.bid_orders.append(tuple([price,volume]))
+            if self.account >= price*volume:
+                self.bid_orders.append(tuple([price,volume]))
+            else:
+                print('you need more monny')
         if action == "ASK":
-            self.ask_orders.append(tuple([price,volume]))
+            if self.position >= volume:
+                self.ask_orders.append(tuple([price,volume]))
+            else:
+                print('you need more position')
 
 Ag_exchange = Exchange('data/Ag(T+D)_SGE_TickData_202003/')
 
