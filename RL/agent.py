@@ -122,8 +122,6 @@ class QLearn(agent):
         # CHHL
 
         # to_state
-        # agent.gamma
-        # agent.alpha
         # 不清楚
 
         Q = self.getQ(from_state, action),
