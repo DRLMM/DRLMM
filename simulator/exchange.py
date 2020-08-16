@@ -73,7 +73,7 @@ class Exchange(object):
         """
         self.account,self.position,self.bid_orders,self.ask_orders = update_function()
         if clear:
-            cancel_num += (len(bid_orders)+len(ask_orders))
+            self.cancel_num += (len(self.bid_orders)+len(self.ask_orders))
             self.bid_orders,self.ask_orders = [],[]
 
     def breakdown(self):
