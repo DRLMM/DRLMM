@@ -122,6 +122,10 @@ class Exchange(object):
                 self.ask_orders.append(tuple([price,volume]))
             else:
                 print('you need more position')
+        # 清库存
+        elif action == "CLEAR" and volume and volume <= self.position:
+            self.account += volume * self.ticker
+            self.position -= volume
         # 平仓
         elif action == "SELLALL":
             self.account += self.position * self.ticker
