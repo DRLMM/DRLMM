@@ -8,7 +8,25 @@ Created on Wed Aug 12 16:17:12 2020
 
 class state():
     
-    def __init__(self,config,is_terminal = False):
+    
+    def __init__(self):
+        
+        # 自身状态
+        self.pos = 0
+        self.a_dist = 0
+        self.b_dist = 0
+        self.spd = 0  # 0-20之间
+        
+        
+        #市场状态
+        self.mpm = 0
+        self.imb = 0
+        self.svl = 0
+        self.vol = 0 # 0-10之间
+        self.rsi = 0
+        
+    
+    def get_state(self,config,is_terminal = False):
         
         self.n_actions = config['learning']['n_actions']
         self.ORDER_SISE = 1

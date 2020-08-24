@@ -6,6 +6,7 @@ Created on Thu Aug 13 11:16:09 2020
 """
 import numpy as np
 
+
 # 对action进行设置
 class action(object):
     
