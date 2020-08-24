@@ -28,6 +28,7 @@ class Exchange(object):
         self.position:float = 0       #仓位
         self.bid_orders:list = list()   #买单列表 [(price1,volume1),(price2,volume2),...]
         self.ask_orders:list = list()   #卖单列表 [(price1,volume1),(price2,volume2),...]
+        self.cancel_num:int = 0
     
     def init_exchange(self):
         """
@@ -66,11 +67,14 @@ class Exchange(object):
         # print(curr_bar)
         return curr_bar
 
-    def update_agent_state(self,update_function):
+    def update_agent_state(self,update_function,clear=True):
         """
-        更新agent状态
+        更新agent状态,默认撤掉没成交的单
         """
         self.account,self.position,self.bid_orders,self.ask_orders = update_function()
+        if clear:
+            self.cancel_num += (len(self.bid_orders)+len(self.ask_orders))
+            self.bid_orders,self.ask_orders = [],[]
 
     def breakdown(self):
         """
@@ -87,8 +91,8 @@ class Exchange(object):
 
         for ask_order in ask_orders:
             if ask_order[PRICE] <= self.ticker:  #现价击穿卖单价
-                account += bid_order[PRICE] * bid_order[VOLUME]
-                position -= bid_order[VOLUME]
+                account += ask_order[PRICE] * ask_order[VOLUME]
+                position -= ask_order[VOLUME]
         # 将已成交的单移除
         bid_orders = [x for x in bid_orders if x[PRICE]>=self.ticker]
         ask_orders = [x for x in ask_orders if x[PRICE]<=self.ticker]
@@ -102,14 +106,27 @@ class Exchange(object):
         self.update_market()
         self.update_agent_state(self.breakdown)
 
-    def send_action(self,action,price=0,volume=0):
+    def send_action(self,action:str,price:float=0,volume:float=0):
         """
         发起动作
         """
+        # 挂买单
         if action == "BID":
-            self.bid_orders.append(tuple([price,volume]))
-        if action == "ASK":
-            self.ask_orders.append(tuple([price,volume]))
+            if self.account >= price*volume:
+                self.bid_orders.append(tuple([price,volume]))
+            else:
+                print('you need more monny')
+        # 挂卖单
+        elif action == "ASK":
+            if self.position >= volume:
+                self.ask_orders.append(tuple([price,volume]))
+            else:
+                print('you need more position')
+        # 平仓
+        elif action == "SELLALL":
+            self.account += self.position * self.ticker
+            self.position = 0
+
 
 Ag_exchange = Exchange('data/Ag(T+D)_SGE_TickData_202003/')
 
