@@ -62,7 +62,7 @@ class action(object):
             self.bid_level = 0
                 
             
-    def get_order_quote(self):
+    def get_order_quote(self,ask_price,bid_price):
         """
         报价
         """
@@ -70,12 +70,12 @@ class action(object):
         bl = self.bid_level
         
         if (self.act_id < 9): 
-            spread = 2 # 市场价差
+            spread = ask_price - bid_price
             half_spread = np.max([0,spread / 2.0])
-            target_price = 2 # 中间价格
+            midprice = (ask_price + bid_price) / 2
             
-            ask_quote = target_price + al * half_spread
-            bid_quote = target_price - bl * half_spread
+            ask_quote = midprice + al * half_spread
+            bid_quote = midprice - bl * half_spread
             
         
         elif (self.act_id == 9): #市价单清空库存
