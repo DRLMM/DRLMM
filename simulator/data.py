@@ -28,7 +28,7 @@ class DataHandler(object):
         读取下一天的数据
         """
         self.day += 1
-        self.day_data = self.read_data(self.folder_path,self.day)
+        self.day_data = self.read_data(self.folder_path,self.day).sort_values(by='volume')
 
     def update_bar(self):
         """

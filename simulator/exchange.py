@@ -22,6 +22,8 @@ class Exchange(object):
         self.low:float = 0      #最低价
         self.close:float = 0    #收盘价
         self.spread:float = 0   #价差
+        self.ask_total_volume:float = 0     #卖单深度1-5的总数量
+        self.bid_total_volume:float = 0     #买单深度1-5的总数量
 
         # agent数据
         self.account:float = 0        #账户余额
@@ -29,6 +31,15 @@ class Exchange(object):
         self.bid_orders:list = list()   #买单列表 [(price1,volume1),(price2,volume2),...]
         self.ask_orders:list = list()   #卖单列表 [(price1,volume1),(price2,volume2),...]
         self.cancel_num:int = 0
+
+    def get_spread(self):
+        return self.asks[0][PRICE] - self.bids[0][PRICE]
+    
+    def get_mid_price(self):
+        return (self.asks[0][PRICE] + self.asks[0][PRICE])/2
+
+    def get_total_volume(self):
+        return self.ask_total_volume,self.bid_total_volume
     
     def init_exchange(self):
         """
@@ -53,17 +64,20 @@ class Exchange(object):
         self.close = float(curr_bar['close'])
         # 买单
         self.bids = []
+        self.bid_total_volume = 0
         for i in range(1,6):
             price = float(curr_bar[f'BidPrice{i}'])
             volume = float(curr_bar[f'BidVolume{i}'])
             self.bids.append(tuple([price,volume]))
+            self.bid_total_volume += volume
         # 卖单
         self.asks = []
+        self.ask_total_volume = 0
         for i in range(1,6):
             price = float(curr_bar[f'AskPrice{i}'])
             volume = float(curr_bar[f'AskVolume{i}'])
             self.asks.append(tuple([price,volume]))
-        self.spread = self.asks[0][PRICE] - self.bids[0][PRICE]
+            self.ask_total_volume += volume
         # print(curr_bar)
         return curr_bar
 
