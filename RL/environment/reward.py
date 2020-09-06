@@ -14,7 +14,7 @@ class Reward(object):
     def __init__(self,config):
         
         self.reward_measure = config['reward']['reward_measure']
-        self.damping_factor = config['reward']['damping_factor']
+        self.damping_factor = float(config['reward']['damping_factor'])
         self.reward = 0
         
     def get_reward(self,ask_quote_price,ask_volume,bid_quote_price,bid_volume,inventory,midprice,last_midprice):
@@ -28,7 +28,7 @@ class Reward(object):
         self.momentum_pnl_step = inventory * self.midprice_move
         
         if (self.reward_measure == "pnl"):
-            reward = self.get_pnl()
+            reward = self.get_pnl() 
             
         elif(self.reward_measure == "pnl_sdamped"):
             reward = self.get_sym_damped_pnl()
