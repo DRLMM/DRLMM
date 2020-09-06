@@ -68,10 +68,12 @@ class action(object):
         """
         al = self.ask_level
         bl = self.bid_level
+        ask_quote = 0.0
+        bid_quote = 0.0
         
         if (self.act_id < 9): 
             spread = ask_price - bid_price
-            half_spread = np.max([0,spread / 2.0])
+            half_spread = max(0,spread / 2.0)
             midprice = (ask_price + bid_price) / 2
             
             ask_quote = midprice + al * half_spread

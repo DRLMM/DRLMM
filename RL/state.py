@@ -48,8 +48,8 @@ class state():
         total_bid_volume:  b1-b5的volume
         一般来说，就数据而言，买单比卖单多
         """
-        v_a = ask_volume
-        v_b = bid_volume
+        v_a = total_ask_volume
+        v_b = total_bid_volume
         
         if ((v_a + v_b) > 0):
             imb= 5* (v_b - v_a) /(v_b + v_a)  # 算得上归一化嘛？

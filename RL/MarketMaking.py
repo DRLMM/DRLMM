@@ -14,6 +14,7 @@ class environment(object):
     def __init__(self,config):
         
         self.n_actions = 10
+        self.config = config
         self.ORDER_SIZE = 1
         self.Ag_exchange = Exchange('../data/')
         
@@ -22,16 +23,14 @@ class environment(object):
         
     def initialise(self):
         
-        self.state = state()
+        self.state = state(self.config)
         self.action = np.random.randint(0,10)
         
         return self.state,self.action
     
     # execute the action
     def step(self,state,action_id,is_terminal = False):
-        
-        
-        
+
         is_terminal = is_terminal
         reward = 0
         

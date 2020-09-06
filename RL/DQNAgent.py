@@ -17,7 +17,7 @@ class DQNAgent:
     def __init__(self,config):
         
         self.state_size = config['state_size']
-        self.n_actions = config['action_size']
+        self.action_size = config['action_size']
         self.memory_size = config['memory_size']
         
         self.memory = [None] * self.memory_size
@@ -31,7 +31,7 @@ class DQNAgent:
             
         self.learning_rate = config['learning_rate']
         self.batch_size = config['batch_size']
-        self.model = self._build_model()
+        self.brain = self._build_model()
         self.i = 0
         
         
@@ -52,10 +52,10 @@ class DQNAgent:
 
 
     def act(self,state):
-        
+
         state = state.reshape(1,self.state_size)
         qs = self.brain.predict(state)
-        n_actions = self.n_actions
+        n_actions = self.action_size
         eps = self.epsilon
         floor = self.epsilon_min
         T = self.train_interval
@@ -73,7 +73,6 @@ class DQNAgent:
         self.memory[self.i] = (state,action,reward,next_state,done)
         
     
-            
         if self.epsilon > self.epsilon_min:
             
             self.epsilon -= self.epsilon_decrement
