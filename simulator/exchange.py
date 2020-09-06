@@ -102,11 +102,13 @@ class Exchange(object):
             if bid_order[PRICE] >= self.ticker:  #现价击穿买单价
                 account -= bid_order[PRICE] * bid_order[VOLUME]
                 position += bid_order[VOLUME]
+                print(f"bid_order execution,price:{bid_order[PRICE]},account:{bid_order[VOLUME]}")
 
         for ask_order in ask_orders:
             if ask_order[PRICE] <= self.ticker:  #现价击穿卖单价
                 account += ask_order[PRICE] * ask_order[VOLUME]
                 position -= ask_order[VOLUME]
+                print(f"ask_order execution,price:{ask_order[PRICE]},account:{ask_order[VOLUME]}")
         # 将已成交的单移除
         bid_orders = [x for x in bid_orders if x[PRICE]<self.ticker]
         ask_orders = [x for x in ask_orders if x[PRICE]>self.ticker]
@@ -129,7 +131,7 @@ class Exchange(object):
             if self.account >= price*volume:
                 self.bid_orders.append(tuple([price,volume]))
             else:
-                print('you need more monny')
+                print('you need more money')
         # 挂卖单
         elif action == "ASK":
             if self.position >= volume:
