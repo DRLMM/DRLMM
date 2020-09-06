@@ -10,17 +10,22 @@ class state():
     
     def __init__(self,config):
         
-        seq = ['pos','a_dist','b_dist','spd','mpm','imb','svl','vol','rsi']
-        self.state_dict = dict.fromkeys(seq,0)
+        self.seq = ['pos','a_dist','b_dist','spd','mpm','imb','vol','rsi']
+        self.state_dict = dict.fromkeys(self.seq,0)
         self.volatility = list()
-        self.vlt_lookback = config['state']['vlt_lookback']
-        self.rsi_lookback = config['state']['vlt_lookback']
+        self.vlt_lookback = int(config['state']['vlt_lookback'])
+        self.rsi_lookback = int(config['state']['vlt_lookback'])
         
         self.return_ups = list()
         self.return_downs = list()
         
-        self.n_actions = config['learning']['n_actions']
+        self.n_actions = int(config['learning']['action_size'])
         self.ORDER_SISE = 1
+        
+    def initialise(self):
+        self.state_dict = dict.fromkeys(self.seq,0)
+        
+        return self.state_dict.values()
         
     
     def get_state(self,is_terminal = False):
@@ -68,26 +73,13 @@ class state():
         self.state_dict['a_dist'] = bid_price - bid_quote
     
     
-# =============================================================================
-#     def get_svl(self,ask_transactions,bid_transactions):
-#         q_a = ask_transactions
-#         q_b = bid_transactions
-#         
-#         if ((q_a + q_b ) > 0):
-#             svl = 5 * (q_b - q_a) /(q_a + q_b)
-#             
-#         else:  
-#             svl = 0
-#             
-#         self.state_dict['svl'] = svl
-# =============================================================================
     
     def get_vol(self,ask_price,bid_price):
         
         midprice = (ask_price + bid_price) / 2
         
         if (len(self.volatility) >= self.vlt_lookback):
-            temp = self.volatility.pop(0)
+            self.volatility.pop(0)
         
         self.volatility.append(midprice)
         
@@ -98,14 +90,15 @@ class state():
     def get_rsi(self,midprice,last_midprice):
         
         if (len(self.return_ups) >= self.rsi_lookback):
-            temp = self.return_ups.pop(0)
+            self.return_ups.pop(0)
             
         if (len(self.return_downs) >= self.rsi_lookback):
-            temp = self.return_downs.pop(0)
+            self.return_downs.pop(0)
         
         midprice_move = midprice - last_midprice
-        self.return_ups.append(np.max[0,midprice_move])
-        self.return_downs.append(abs(np.min[0,midprice_move]))
+      
+        self.return_ups.append(np.max([0,midprice_move]))
+        self.return_downs.append(abs(np.min([0,midprice_move])))
         
         u = np.mean(self.return_ups)
         d = np.mean(self.return_downs)

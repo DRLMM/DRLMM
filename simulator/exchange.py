@@ -3,6 +3,7 @@ import datetime
 
 PRICE = 0
 VOLUME = 1
+HEAD = 2
 
 # 用于模拟交易所
 class Exchange(object):
@@ -24,23 +25,26 @@ class Exchange(object):
         self.spread:float = 0   #价差
         self.ask_total_volume:float = 0     #卖单深度1-5的总数量
         self.bid_total_volume:float = 0     #买单深度1-5的总数量
+        self.volume: int = 0 # 累计成交量
+        self.last_volume: int = 0
+        self.volume_diff: int = 0 #成交量
 
         # agent数据
         self.account:float = 0        #账户余额
         self.position:float = 0       #仓位
-        self.bid_orders:list = list()   #买单列表 [(price1,volume1),(price2,volume2),...]
-        self.ask_orders:list = list()   #卖单列表 [(price1,volume1),(price2,volume2),...]
+        self.bid_orders:list = list()   #买单列表 [(price1,volume1,head1),(price2,volume2,head2),...]
+        self.ask_orders:list = list()   #卖单列表 [(price1,volume1,head1),(price2,volume2,head2),...]
         self.cancel_num:int = 0
 
     def get_spread(self):
         return self.asks[0][PRICE] - self.bids[0][PRICE]
-    
+
     def get_mid_price(self):
         return (self.asks[0][PRICE] + self.asks[0][PRICE])/2
 
     def get_total_volume(self):
         return self.ask_total_volume,self.bid_total_volume
-    
+
     def init_exchange(self):
         """
         初始化交易所状态
@@ -62,6 +66,10 @@ class Exchange(object):
         self.high = float(curr_bar['high'])
         self.low = float(curr_bar['low'])
         self.close = float(curr_bar['close'])
+        self.last_volume = self.volume
+        self.volume = int(curr_bar['volume'])
+        self.volume_diff = self.volume - self.last_volume
+
         # 买单
         self.bids = []
         self.bid_total_volume = 0
@@ -113,7 +121,7 @@ class Exchange(object):
         bid_orders = [x for x in bid_orders if x[PRICE]<self.ticker]
         ask_orders = [x for x in ask_orders if x[PRICE]>self.ticker]
         return account,position,bid_orders,ask_orders
-        
+
 
     def update_state(self):
         """
@@ -146,6 +154,56 @@ class Exchange(object):
         elif action == "SELLALL":
             self.account += self.position * self.ticker
             self.position = 0
+
+    def update_function(self):
+        account = self.account
+        position = self.position
+        bid_orders = self.bid_orders
+        ask_orders = self.ask_orders
+        bids = self.bids
+        asks = self.asks
+        volume_diff = self.volume_diff
+        remaining_volume = volume_diff #成交量剩余量
+        for i in range(len(bids)):#从买一开始
+            if remaining_volume <= 0: break
+            if bids[i][PRICE] >= self.ticker: #买单价格高于成交价
+                if remaining_volume > bids[i][VOLUME]:#击穿
+                    remaining_volume -= bids[i][VOLUME]
+                    account -= bid_orders[i][PRICE] * bid_orders[i][VOLUME]
+                    position += bid_orders[i][VOLUME]
+                else:
+                    diff = remaining_volume - bid_orders[i][HEAD]
+                    if diff > 0:
+                        if bid_orders[i][VOLUME] <= diff:#totally executed
+                            account -= bid_orders[i][PRICE] * bid_orders[i][VOLUME]
+                            position += bid_orders[i][VOLUME]
+                        else:#patially
+                            account -= bid_orders[i][PRICE] * diff
+                            position += diff
+                    else: #如果没成交就撤单，这步可去掉
+                        self.bid_orders[i][HEAD] -= remaining_volume
+        for i in range(len(asks)):
+            if remaining_volume <= 0: break
+            if asks[i][PRICE] <= self.ticker:
+                if remaining_volume > asks[i][VOLUME]:
+                    remaining_volume -= asks[i][VOLUME]
+                    account += ask_orders[i][PRICE] * ask_orders[i][VOLUME]
+                    position -= ask_orders[i][VOLUME]
+                else:
+                    diff = remaining_volume - ask_orders[i][HEAD]
+                    if diff > 0:
+                        if ask_orders[i][VOLUME] <= diff:#totally executed
+                            account -= ask_orders[i][PRICE] * ask_orders[i][VOLUME]
+                            position += ask_orders[i][VOLUME]
+                        else:#patially
+                            account -= ask_orders[i][PRICE] * diff
+                            position += diff
+                    else: #如果没成交就撤单，这步可去掉
+                        self.ask_orders[i][HEAD] -= remaining_volume
+        # 将已成交的单移除
+        bid_orders = [x for x in bid_orders if x[PRICE] < self.ticker]
+        ask_orders = [x for x in ask_orders if x[PRICE] > self.ticker]
+        return account, position, bid_orders, ask_orders
 
 
 Ag_exchange = Exchange('data/Ag(T+D)_SGE_TickData_202003/')

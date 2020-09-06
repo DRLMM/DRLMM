@@ -11,7 +11,7 @@ class policy(object):
     def __init__(self,n_actions,seed):
         self.N_ACTIONS = n_actions
         self.seed = seed
-        np.random.seed(self.seed)
+        #np.random.seed(self.seed)
     
     def handle_terminal(self,episode):
         pass
@@ -34,11 +34,12 @@ class greedy_policy(policy):
     
     def sample(self,qs):
         
+        
         argmax = 0
         n_ties = 1
         
         for a in range(1,self.N_ACTIONS):
-            np.random.seed(self.seed)
+           # np.random.seed(self.seed)
             if(qs[a]> qs[argmax]):
                 argmax = a
                 
@@ -65,10 +66,11 @@ class epsilon_greedy(greedy_policy):
         
     
     def sample(self,qs):
-        np.random.seed(self.seed)
+        print("qs",qs)
+        #np.random.seed(self.seed)
         random_number = np.random.rand()
         if( random_number < self.eps):
-            np.random.seed(self.seed)
+            #np.random.seed(self.seed)
             return np.random.randint(0,self.N_ACTIONS-1)
         else:
             return greedy_policy.sample(self,qs)
@@ -84,9 +86,9 @@ class epsilon_greedy(greedy_policy):
 # # 测试
 # if __name__ == '__main__':
 #     
-#     qs = [1,2,3,4,4]
-#     n_actions = 5
-#     eps = 0.7
+#     qs = [13.684795,26.555346,-8.383726,-29.709715,30.46716,22.772629,-38.131424,9.355559,40.934956,31.808802]
+#     n_actions = 10
+#     eps = 0.1
 #     seed = 1056
 #     T = 2
 #     floor = 0.05
@@ -96,5 +98,5 @@ class epsilon_greedy(greedy_policy):
 #     
 #     epsilon_greedy_action = epsilon_greedy(n_actions,eps,floor,T,seed).sample(qs)
 #     print(epsilon_greedy_action)
+#     
 # =============================================================================
-    
