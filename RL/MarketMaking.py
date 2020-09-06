@@ -19,7 +19,7 @@ class environment(object):
         self.Ag_exchange = Exchange('../data/')
         
         self.Ag_exchange.init_exchange()
-        self.Ag_exchange.init_agent(10000,0)
+        self.Ag_exchange.init_agent(1000000,0)
         
     def initialise(self):
         
