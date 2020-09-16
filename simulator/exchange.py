@@ -35,6 +35,10 @@ class Exchange(object):
         self.bid_orders:list = list()   #买单列表 [(price1,volume1,head1),(price2,volume2,head2),...]
         self.ask_orders:list = list()   #卖单列表 [(price1,volume1,head1),(price2,volume2,head2),...]
         self.cancel_num:int = 0
+        
+    def get_price(self):
+        
+        return self.asks[0][PRICE], self.bids[0][PRICE]
 
     def get_spread(self):
         return self.asks[0][PRICE] - self.bids[0][PRICE]
@@ -206,7 +210,9 @@ class Exchange(object):
         return account, position, bid_orders, ask_orders
 
 
-Ag_exchange = Exchange('data/Ag(T+D)_SGE_TickData_202003/')
+# =============================================================================
+# Ag_exchange = Exchange('data/')
+# =============================================================================
 
 
 

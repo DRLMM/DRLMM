@@ -20,10 +20,10 @@ class MarketMaking(object):
         
         self.n_actions = 10
         self.ORDER_SIZE = 1
-        self.Ag_exchange = Exchange('../data/')
+        self.Ag_exchange = Exchange('data/')
         
         self.Ag_exchange.init_exchange()
-        self.Ag_exchange.init_agent(10000,0)
+        self.Ag_exchange.init_agent(10000000,0)
         self.state_dict = state(config)
         self.rewards = Reward(config)
         

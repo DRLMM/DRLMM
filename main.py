@@ -20,11 +20,11 @@ def run():
             env.render()
             # RL choose action based on observation
             action = RL.choose_action(observation)
-            print("action",action)
+            #print("action",action)
             # RL take action and get next observation and reward
             observation_, reward, done = env.step(observation,action)
             #print(observation)
-            #print(reward)
+            print(reward)
             RL.store_transition(observation, action, reward, observation_)
  
             if (step > 200) and (step % 5 == 0):
@@ -32,7 +32,7 @@ def run():
             # swap observation
             observation = observation_
             # break while loop when end of this episode
-            if time == 200:
+            if time == 100:
                 break
             step += 1
     # end of game
@@ -42,7 +42,7 @@ def run():
  
 if __name__ == "__main__":
     
-    config_file = "../config.ini"
+    config_file = "config.ini"
     cf = config().getconf(config_file)
     n_features = int(cf['state']['state_size'])
     n_actions = int(cf['learning']['action_size'])

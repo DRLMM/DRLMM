@@ -10,28 +10,28 @@ import keras
 from keras.layers import Dense
 from keras.models import Sequential
 from keras.optimizers import Adam
-from RL.policy import epsilon_greedy
+from RL.environment.policy import epsilon_greedy
 
 class DQNAgent:
     
     def __init__(self,config):
         
-        self.state_size = config['state_size']
-        self.action_size = config['action_size']
-        self.memory_size = config['memory_size']
-        
+        self.state_size = int(config['state']['state_size'])
+        self.n_actions = int(config['learning']['action_size'])
+        self.memory_size = int(config['learning']['memory_size'])
+        self.episodes = int(config['learning']['episodes'])
         self.memory = [None] * self.memory_size
-        self.gamma = config['gamma']
-        self.epsilon = config['epsilon']
-        self.epsilon_min = config['epsilon_min']
-        self.train_interval = config['train_interval']
-        self.episode_length = config['episode_length']
+        self.gamma = float(config['learning']['gamma'])
+        self.epsilon = float(config['learning']['epsilon'])
+        self.epsilon_min = float(config['learning']['epsilon_min'])
+        self.train_interval = int(config['learning']['train_interval'])
+        self.episode_length = int(config['learning']['episode_length'])
         self.epsilon_decrement = (self.epsilon - self.epsilon_min) \
             * self.train_interval / (self.episodes * self.episode_length)
             
-        self.learning_rate = config['learning_rate']
-        self.batch_size = config['batch_size']
-        self.brain = self._build_model()
+        self.learning_rate = float(config['learning']['learning_rate'])
+        self.batch_size = int(config['learning']['batch_size'])
+        self.model = self._build_model()
         self.i = 0
         
         
@@ -46,16 +46,17 @@ class DQNAgent:
                         input_dim=self.state_size,
                         activation=activation))
         brain.add(Dense(neurons_per_layer, activation=activation))
-        brain.add(Dense(self.action_size, activation='linear'))
+        brain.add(Dense(self.n_actions, activation='linear'))
         brain.compile(loss='mse', optimizer=Adam(lr=self.learning_rate))
         return brain
 
 
     def act(self,state):
-
+        print("act state",state)
+        
         state = state.reshape(1,self.state_size)
-        qs = self.brain.predict(state)
-        n_actions = self.action_size
+        qs = self.model.predict(state)
+        n_actions = self.n_actions
         eps = self.epsilon
         floor = self.epsilon_min
         T = self.train_interval
@@ -66,27 +67,28 @@ class DQNAgent:
         return epsilon_greedy_action
     
     
-    def observe(self,state,action,reward,next_state,done):
+    def observe(self,state,action,reward,next_state,done,warming_up = False):
         """Memory Management and training of the agent
         """  
         self.i = (self.i + 1) % self.memory_size
         self.memory[self.i] = (state,action,reward,next_state,done)
         
-    
-        if self.epsilon > self.epsilon_min:
+        if (not warming_up):
             
-            self.epsilon -= self.epsilon_decrement
-        state, action, reward, next_state, done = self._get_batches()
-        
-        reward += (self.gamma
-                   * np.logical_not(done)
-                   * np.amax(self.brain.predict(next_state),
-                             axis = 1))
-        q_target = self.brain.predict(state)
-        
-        q_target[action] = reward
+            if self.epsilon > self.epsilon_min:
+                
+                self.epsilon -= self.epsilon_decrement
+            state, action, reward, next_state, done = self._get_batches()
             
-        return self.brain.fit(state,q_target,batch_size = self.batch_size,epochs=1,verbose = False)
+            reward += (self.gamma
+                       * np.logical_not(done)
+                       * np.amax(self.brain.predict(next_state),
+                                 axis = 1))
+            q_target = self.brain.predict(state)
+            
+            q_target[action] = reward
+                
+            return self.brain.fit(state,q_target,batch_size = self.batch_size,epochs=1,verbose = False)
             
          
     def _get_batches(self):
@@ -111,53 +113,58 @@ class DQNAgent:
         
 
 #%%
-from RL.MarketMaking import environment
-from config import config
+from RL.environment.environment import MarketMaking
+from RL.environment.config import config
 
 
-config_file = "./config.ini"
+config_file = "../config.ini"
 cf = config().getconf(config_file)
-memory_size = cf['memory_size']
-env =  environment(cf)
+memory_size = int(cf['learning']['memory_size'])
+env =  MarketMaking(cf)
 state, _ = env.initialise()
 
 agent = DQNAgent(cf)
 
 # Warming up the agent
 #%%
-for _ in range(memory_size):
-    action = agent.act(state)
+next_state = state
+for _ in range(5):
+    action = agent.act(next_state)
+    print("action",action)
     
-    next_state,reward,done, _ = env.step(state,action)
-    agent.observe(state,action,reward,next_state,done)
+    next_state,reward,done= env.step(state,action)
+    print("reward",reward)
+    agent.observe(state,action,reward,next_state,done,warming_up = True)
   
 #Training the agent
 #%%
-episodes = 100
-episode_length = 400
-
-rews = []
-losses =[]
-epsilons =[]
-
-for ep in range(episodes):
-    
-    state = env.initialise()
-    rew = 0
-    for _ in range(episode_length):
-        action = agent.act(state)
-        
-        next_state, reward,done, _ = env.step(state,action)
-        
-        loss = agent.observe(state,action,reward,next_state,done)
-        state = next_state
-        rew += reward
-        
-    print("Ep:" + str(ep)
-           + "| rew:" + str(round(rew, 2))
-           + "| eps:" + str(round(agent.epsilon, 2))
-           + "| loss:" + str(round(loss.history["loss"][0], 4)))
-    
-    rews.append(rew)
-    epsilons.append(agent.epsilon)
-    losses.append(loss.history['loss'][0])
+# =============================================================================
+# episodes = 10
+# episode_length = 40
+# 
+# rews = []
+# losses =[]
+# epsilons =[]
+# 
+# for ep in range(episodes):
+#     
+#     state,_ = env.initialise()
+#     rew = 0
+#     for _ in range(episode_length):
+#         action = agent.act(state)
+#         
+#         next_state, reward,done= env.step(state,action)
+#         print(next_state, reward,done)
+#         loss = agent.observe(state,action,reward,next_state,done)
+#         state = next_state
+#         rew += reward
+#         
+#     print("Ep:" + str(ep)
+#            + "| rew:" + str(round(rew, 2))
+#            + "| eps:" + str(round(agent.epsilon, 2))
+#            + "| loss:" + str(round(loss.history["loss"][0], 4)))
+#     
+#     rews.append(rew)
+#     epsilons.append(agent.epsilon)
+#     losses.append(loss.history['loss'][0])
+# =============================================================================
