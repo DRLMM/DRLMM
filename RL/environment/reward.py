@@ -39,7 +39,9 @@ class Reward(object):
         return reward
     
     def get_pnl(self):
-        
+        """
+        PnL
+        """
         r = self.ask_volume * (self.ask_quote_price - self.midprice) + self.bid_volume * (self.midprice - self.bid_quote_price)
         
         r = r + self.momentum_pnl_step
@@ -47,14 +49,18 @@ class Reward(object):
     
     
     def get_sym_damped_pnl(self):
-        
+        """
+        Symmetrically dampened PnL
+        """
           
         pnl_step = self.get_pnl()
         r = pnl_step -self.damping_factor * self.momentum_pnl_step
         return r
     
     def get_asym_damped_pnl(self):
-        
+        """
+        Asymmetrically dampened PnL
+        """
         pnl_step = self.get_pnl()
         r = pnl_step -self.damping_factor * np.max([0, self.momentum_pnl_step])    
         return r
