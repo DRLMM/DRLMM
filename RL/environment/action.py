@@ -8,7 +8,7 @@ import numpy as np
 
 
 # 对action进行设置
-class action(object):
+class Action(object):
     
     def __init__(self,act_id):
         

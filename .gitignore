@@ -109,3 +109,6 @@ venv.bak/
 
 # data
 data/**
+
+# history
+history.txt

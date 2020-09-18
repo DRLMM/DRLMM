@@ -36,7 +36,7 @@ class Exchange(object):
         self.ask_orders:list = list()   #卖单列表 [(price1,volume1,head1),(price2,volume2,head2),...]
         self.cancel_num:int = 0
         
-    def get_price(self):
+    def get_first_price(self):
         
         return self.asks[0][PRICE], self.bids[0][PRICE]
 
@@ -97,10 +97,14 @@ class Exchange(object):
         """
         更新agent状态,默认撤掉没成交的单
         """
-        self.account,self.position,self.bid_orders,self.ask_orders = update_function()
+        self.account,self.position,self.bid_orders,self.ask_orders,bids_execution,asks_execution = update_function()
         if clear:
             self.cancel_num += (len(self.bid_orders)+len(self.ask_orders))
             self.bid_orders,self.ask_orders = [],[]
+        with open('./history.txt','a+') as f:
+            f.write(str([self.account,self.position,bids_execution,asks_execution]))
+            f.write('\n')
+        return bids_execution,asks_execution
 
     def breakdown(self):
         """
@@ -110,21 +114,25 @@ class Exchange(object):
         position = self.position
         bid_orders = self.bid_orders
         ask_orders = self.ask_orders
+        bids_execution = list()
+        asks_execution = list()
         for bid_order in bid_orders:
             if bid_order[PRICE] >= self.ticker:  #现价击穿买单价
                 account -= bid_order[PRICE] * bid_order[VOLUME]
                 position += bid_order[VOLUME]
                 print(f"bid_order execution,price:{bid_order[PRICE]},account:{bid_order[VOLUME]}")
+                bids_execution.append((bid_order[PRICE],bid_order[VOLUME]))
 
         for ask_order in ask_orders:
             if ask_order[PRICE] <= self.ticker:  #现价击穿卖单价
                 account += ask_order[PRICE] * ask_order[VOLUME]
                 position -= ask_order[VOLUME]
                 print(f"ask_order execution,price:{ask_order[PRICE]},account:{ask_order[VOLUME]}")
+                asks_execution.append(((ask_order[PRICE],ask_order[VOLUME])))
         # 将已成交的单移除
         bid_orders = [x for x in bid_orders if x[PRICE]<self.ticker]
         ask_orders = [x for x in ask_orders if x[PRICE]>self.ticker]
-        return account,position,bid_orders,ask_orders
+        return account,position,bid_orders,ask_orders, bids_execution,asks_execution
 
 
     def update_state(self):
@@ -132,7 +140,7 @@ class Exchange(object):
         更新状态
         """
         self.update_market()
-        self.update_agent_state(self.breakdown)
+        return self.update_agent_state(self.breakdown) 
 
     def send_action(self,action:str,price:float=0,volume:float=0):
         """

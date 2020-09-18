@@ -10,7 +10,7 @@ from RL.environment.config import config
  
 def run():
     step = 0
-    for episode in range(1):
+    for episode in range(10):
         # initial observation
         observation = env.reset()
         time = 0
@@ -32,7 +32,7 @@ def run():
             # swap observation
             observation = observation_
             # break while loop when end of this episode
-            if time == 10:
+            if time == 20000:
                 break
             step += 1
     # end of game
