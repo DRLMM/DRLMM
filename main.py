@@ -32,7 +32,7 @@ def run():
             # swap observation
             observation = observation_
             # break while loop when end of this episode
-            if time == 100:
+            if time == 10:
                 break
             step += 1
     # end of game
