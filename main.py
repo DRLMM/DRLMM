@@ -7,16 +7,18 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-T = 1000
-account_list = list()
-position_list =list()
+T = 100
+init_price = 4043
  
 def run(env,RL):
     step = 0
-    for episode in range(1):
+    for episode in range(2):
         # initial observation
         observation = env.reset()
         time = 0
+
+        account_list = list()
+        position_list =list()   
         while True:
             time += 1
             # fresh env
@@ -29,7 +31,7 @@ def run(env,RL):
             account_list.append(env.Ag_exchange.account)
             position_list.append(env.Ag_exchange.position)
             #print(observation)
-            print(reward)
+            # print(reward)
             RL.store_transition(observation, action, reward, observation_)
  
             if (step > 200) and (step % 5 == 0):
@@ -40,6 +42,16 @@ def run(env,RL):
             if time == T:
                 break
             step += 1
+        # 画图
+        accounts = np.array(account_list)
+        positions = np.array(position_list)*4043 #4043是最开始的单价
+        total = np.sum([accounts,positions],axis=0)
+
+        plt.plot(np.arange(T),total)
+        plt.ylabel('Account')
+        plt.xlabel('time')
+        plt.show()
+
     # end of game
     print('game over')
     return account_list,position_list
@@ -61,13 +73,15 @@ if __name__ == "__main__":
                       memory_size=2000,
                       # output_graph=True
                       )
-    init_price = 4043
+
     account_list,position_list = run(env,RL)
-    accounts = np.array(account_list)
-    positions = np.array(position_list)*4043 #4043是最开始的单价
-    total = np.sum([accounts,positions],axis=0)
     RL.plot_cost()
-    plt.plot(np.arange(T),total)
-    plt.ylabel('Account')
-    plt.xlabel('time')
-    plt.show()
+    
+    # accounts = np.array(account_list)
+    # positions = np.array(position_list)*4043 #4043是最开始的单价
+    # total = np.sum([accounts,positions],axis=0)
+    
+    # plt.plot(np.arange(T),total)
+    # plt.ylabel('Account')
+    # plt.xlabel('time')
+    # plt.show()

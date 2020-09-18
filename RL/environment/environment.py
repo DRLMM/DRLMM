@@ -29,8 +29,12 @@ class MarketMaking(object):
     def reset(self):
         
         init_state = np.array(list(self.state.initialise()))
+
+        # reset exchange
+        self.Ag_exchange.reset_exchange()
+        self.Ag_exchange.init_exchange()
+        self.Ag_exchange.init_agent(500000,100)
         #init_action = np.random.randint(0,10)
-        
         return init_state
     
     def step(self,state,action_id):

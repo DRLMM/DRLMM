@@ -8,8 +8,10 @@ HEAD = 2
 # 用于模拟交易所
 class Exchange(object):
 
-    def __init__(self,folder_path:str,update_function=None):
-        self.dataHandler = DataHandler(folder_path)
+    def __init__(self,folder_path='',update_function=None):
+        if folder_path:
+            self.dataHandler = DataHandler(folder_path)
+            self.folder_path = folder_path
         self.timestamp:datetime.datetime = None     #时间戳
         self.count = -1
         self.update_function = update_function
@@ -36,8 +38,13 @@ class Exchange(object):
         self.ask_orders:list = list()   #卖单列表 [(price1,volume1,head1),(price2,volume2,head2),...]
         self.cancel_num:int = 0
         
+    def reset_exchange(self, init_data=False):
+        if init_data:
+            self.__init__(self.folder_path)
+        else:
+            self.__init__()
+
     def get_first_price(self):
-        
         return self.asks[0][PRICE], self.bids[0][PRICE]
 
     def get_spread(self):
