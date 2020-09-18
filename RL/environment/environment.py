@@ -15,14 +15,15 @@ BID = "BID"
 
 class MarketMaking(object):
     
-    def __init__(self,config):
-        
+    def __init__(self,config,folder_path,agent_state):
+        self.init_account = agent_state['account']
+        self.init_position = agent_state['position']
         self.n_actions = 10
         self.ORDER_SIZE = 1
-        self.Ag_exchange = Exchange('data/')
+        self.Ag_exchange = Exchange(folder_path)
         
         self.Ag_exchange.init_exchange()
-        self.Ag_exchange.init_agent(500000,100)
+        self.Ag_exchange.init_agent(self.init_account,self.init_position)
         self.state = State(config)
         self.rewards = Reward(config)
         
@@ -33,7 +34,7 @@ class MarketMaking(object):
         # reset exchange
         self.Ag_exchange.reset_exchange()
         self.Ag_exchange.init_exchange()
-        self.Ag_exchange.init_agent(500000,100)
+        self.Ag_exchange.init_agent(self.init_account,self.init_position)
         #init_action = np.random.randint(0,10)
         return init_state
     
