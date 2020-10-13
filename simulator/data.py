@@ -46,11 +46,8 @@ class DataHandler(object):
         if self.curr_bar_index >= len(self.day_data):  #如果当天的数据已读完则进入下一天
             self.read_next_day()  #读取下一天的内容
             self.curr_bar_index = 0  #将bar的下标归零
-<<<<<<< HEAD
-=======
         if self.end:
             return None
->>>>>>> 972c935... siran server
         self.curr_bar = self.day_data[self.curr_bar_index:self.curr_bar_index+1]  #将bar数据更新
         self.history_bar.append(self.curr_bar)
         return self.curr_bar
