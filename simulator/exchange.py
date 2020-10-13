@@ -72,6 +72,8 @@ class Exchange(object):
         """
         self.count += 1
         curr_bar = self.dataHandler.update_bar()    #更新bar
+        if self.dataHandler.end:
+            return None
         self.ticker = float(curr_bar['LastPrice'])
         self.open = float(curr_bar['open'])
         self.high = float(curr_bar['high'])
@@ -147,6 +149,8 @@ class Exchange(object):
         更新状态
         """
         self.update_market()
+        if self.dataHandler.end:
+            return [None,None]
         return self.update_agent_state(self.breakdown) 
 
     def send_action(self,action:str,price:float=0,volume:float=0):

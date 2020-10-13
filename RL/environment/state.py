@@ -45,7 +45,17 @@ class State():
         """
         中间价移动量
         """
-        self.state_dict['mpm'] = midprice - last_midprice
+        #self.state_dict['mpm'] = midprice - last_midprice
+        # 归一化  tick
+        mprice = (midprice - 4000) /5
+        lmprice = (last_midprice - 4000) /5
+        mpm = mprice - lmprice
+        if mpm > 10:
+            mpm = 10
+        if mpm < -10:
+            mpm = -10
+            
+        self.state_dict['mpm'] = mpm
         return self.state_dict['mpm']
        
     def get_spd(self,ask_price,bid_price):
@@ -53,6 +63,16 @@ class State():
         价差
         """
         self.state_dict['spd'] = (ask_price - bid_price) / 2
+        
+        # 归一化  tick
+        ap = (ask_price - 4000) /5
+        bp = (bid_price - 4000) /5
+        spd = (ap - bp) /2
+        if spd > 20:
+            spd = 20
+            
+        self.state_dict['spd'] = spd
+        
         return self.state_dict['spd']
         
     

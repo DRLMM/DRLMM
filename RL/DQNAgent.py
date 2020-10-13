@@ -137,6 +137,33 @@ for _ in range(5):
     agent.observe(state,action,reward,next_state,done,warming_up = True)
   
 #Training the agent
+# =============================================================================
+# #%%
+# from RL.environment.environment import MarketMaking
+# from RL.environment.config import config
+# 
+# 
+# config_file = "../config.ini"
+# cf = config().getconf(config_file)
+# memory_size = int(cf['learning']['memory_size'])
+# env =  MarketMaking(cf)
+# state, _ = env.initialise()
+# 
+# agent = DQNAgent(cf)
+# 
+# # Warming up the agent
+# #%%
+# next_state = state
+# for _ in range(5):
+#     action = agent.act(next_state)
+#     print("action",action)
+#     
+#     next_state,reward,done= env.step(state,action)
+#     print("reward",reward)
+#     agent.observe(state,action,reward,next_state,done,warming_up = True)
+#   
+# #Training the agent
+# =============================================================================
 #%%
 # =============================================================================
 # episodes = 10

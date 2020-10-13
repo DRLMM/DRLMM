@@ -58,6 +58,13 @@ class MarketMaking(object):
         self.Ag_exchange.send_action(BID,bid_quote,bid_volume)
         
         bids_execution,asks_execution = self.Ag_exchange.update_state()
+
+        if self.Ag_exchange.dataHandler.end:
+            next_state = None
+            reward = None
+            is_terminal = True
+            return next_state,reward,is_terminal
+
         inventory =  self.Ag_exchange.position
         total_ask_volume,total_bid_volume =  self.Ag_exchange.get_total_volume()
         midprice = self.Ag_exchange.get_mid_price()
