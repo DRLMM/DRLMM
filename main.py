@@ -8,10 +8,11 @@ import matplotlib.pyplot as plt
 
 
 T = 2000 #步数
+episode_set = 20
  
 def run():
     step = 0
-    for episode in range(200):
+    for episode in range(episode_set):
         # initial observation
         if step == 0:
             observation = env.reset()
@@ -37,9 +38,11 @@ def run():
             RL.store_transition(observation, action, reward, observation_)
             account_list.append(env.Ag_exchange.account)
             position_list.append(env.Ag_exchange.position)
+            ticker_list.append(env.Ag_exchange.ticker)
  
             if (step > 200) and (step % 5 == 0):
                 RL.learn()
+                print(env.Ag_exchange.account,env.Ag_exchange.position,env.Ag_exchange.account+env.Ag_exchange.position*4043)
             # swap observation
             observation = observation_
             # break while loop when end of this episode
@@ -54,12 +57,13 @@ def run():
 if __name__ == "__main__":
     account_list = list()
     position_list =list()  
+    ticker_list = list()
     
     config_file = "config.ini"
     cf = config().getconf(config_file)
     n_features = int(cf['state']['state_size'])
     n_actions = int(cf['learning']['action_size'])
-    env =  MarketMaking(cf,'data/Ag(T+D)_SGE_TickData_202003/',{'account':1000000,'position':100})
+    env =  MarketMaking(cf,'data/Ag(T+D)_SGE_TickData_202003/',{'account':10000000,'position':0})
     
     RL = DeepQNetwork(n_actions, n_features,
                       learning_rate=0.01,
@@ -73,10 +77,10 @@ if __name__ == "__main__":
     RL.plot_cost()
     # 画图
     accounts = np.array(account_list)
-    positions = np.array(position_list)*4043 #4043是最开始的单价
+    positions = np.array(position_list)*np.array(ticker_list) #4043是最开始的单价
     total = np.sum([accounts,positions],axis=0)
 
-    plt.plot(np.arange(T),total)
+    plt.plot(np.arange(T*episode_set),total)
     plt.ylabel('Account')
     plt.xlabel('time')
     plt.show()
