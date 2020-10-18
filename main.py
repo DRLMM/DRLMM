@@ -13,6 +13,7 @@ episode_set = 20
 def run():
     step = 0
     for episode in range(episode_set):
+        print(episode)
         # initial observation
         if step == 0:
             observation = env.reset()
@@ -42,7 +43,7 @@ def run():
  
             if (step > 200) and (step % 5 == 0):
                 RL.learn()
-                print(env.Ag_exchange.account,env.Ag_exchange.position,env.Ag_exchange.account+env.Ag_exchange.position*4043)
+                # print(env.Ag_exchange.account,env.Ag_exchange.position,env.Ag_exchange.account+env.Ag_exchange.position*4043)
             # swap observation
             observation = observation_
             # break while loop when end of this episode
@@ -63,7 +64,7 @@ if __name__ == "__main__":
     cf = config().getconf(config_file)
     n_features = int(cf['state']['state_size'])
     n_actions = int(cf['learning']['action_size'])
-    env =  MarketMaking(cf,'data/Ag(T+D)_SGE_TickData_202003/',{'account':10000000,'position':0})
+    env =  MarketMaking(cf,'data/Ag(T+D)_SGE_TickData_202003/',{'account':1000000,'position':50})
     
     RL = DeepQNetwork(n_actions, n_features,
                       learning_rate=0.01,

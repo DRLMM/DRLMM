@@ -68,12 +68,12 @@ class Action(object):
         """
         al = self.ask_level
         bl = self.bid_level
+
+        spread = ask_price - bid_price
+        half_spread = np.max([0,spread / 2.0])
+        midprice = (ask_price + bid_price) / 2
         
         if (self.act_id < 9): 
-            spread = ask_price - bid_price
-            half_spread = np.max([0,spread / 2.0])
-            midprice = (ask_price + bid_price) / 2
-            
             ask_quote = midprice + al * half_spread
             bid_quote = midprice - bl * half_spread
             
@@ -81,8 +81,8 @@ class Action(object):
         elif (self.act_id == 9): #市价单清空库存
             a1 = 0 # 买1
             b1 = 0 # 卖1
-            ask_quote = a1 + al
-            bid_quote = b1 - bl
+            ask_quote = a1 + al + ask_price
+            bid_quote = b1 - bl + bid_price
             
         return ask_quote,bid_quote  
 

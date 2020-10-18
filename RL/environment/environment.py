@@ -12,6 +12,7 @@ from RL.environment.reward import Reward
 
 ASK = "ASK"
 BID = "BID"
+SELLALL = "SELLALL"
 
 class MarketMaking(object):
     
@@ -49,13 +50,20 @@ class MarketMaking(object):
         # choose action
         act = Action(action_id)
 
-        ask_price,bid_price =  self.Ag_exchange.get_first_price()
-        ask_quote,bid_quote = act.get_order_quote(ask_price,bid_price)
-        ask_volume = self.ORDER_SIZE
-        bid_volume = self.ORDER_SIZE
+        if act == 9:
+            ask_quote,bid_quote = act.get_order_quote(ask_price,bid_price)
+            ask_volume = self.Ag_exchange.position
+            bid_volume = 0
+            self.Ag_exchange.send_action(ASK,0,ask_volume)
+            print("SELLALL")
+        else:
+            ask_price,bid_price =  self.Ag_exchange.get_first_price()
+            ask_quote,bid_quote = act.get_order_quote(ask_price,bid_price)
+            ask_volume = self.ORDER_SIZE
+            bid_volume = self.ORDER_SIZE
         
-        self.Ag_exchange.send_action(ASK,ask_quote,ask_volume)
-        self.Ag_exchange.send_action(BID,bid_quote,bid_volume)
+            self.Ag_exchange.send_action(ASK,ask_quote,ask_volume)
+            self.Ag_exchange.send_action(BID,bid_quote,bid_volume)
         
         bids_execution,asks_execution = self.Ag_exchange.update_state()
 
