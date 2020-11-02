@@ -37,6 +37,11 @@ class Exchange(object):
         self.bid_orders:list = list()   #买单列表 [(price1,volume1,head1),(price2,volume2,head2),...]
         self.ask_orders:list = list()   #卖单列表 [(price1,volume1,head1),(price2,volume2,head2),...]
         self.cancel_num:int = 0
+
+        # 统计数据
+        self.bid_count = 0
+        self.ask_count = 0
+        self.clear_count = 0
         
     def reset_exchange(self, init_data=False):
         if init_data:
@@ -164,6 +169,7 @@ class Exchange(object):
         """
         # 挂买单
         if action == "BID":
+            self.bid_count += 1
             if self.account >= price*volume:
                 self.bid_orders.append(tuple([price,volume]))
             else:
@@ -171,6 +177,10 @@ class Exchange(object):
                 pass
         # 挂卖单
         elif action == "ASK":
+            if price == 0:
+                self.clear_count += 1
+            else:
+                self.ask_count += 1
             if self.position >= volume:
                 self.ask_orders.append(tuple([price,volume]))
             else:

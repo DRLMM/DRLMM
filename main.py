@@ -76,12 +76,40 @@ if __name__ == "__main__":
                       )
     run()
     RL.plot_cost()
+
+    bid_count = env.Ag_exchange.bid_count
+    ask_count = env.Ag_exchange.ask_count
+    clear_count = env.Ag_exchange.clear_count
     # 画图
     accounts = np.array(account_list)
     positions = np.array(position_list)*np.array(ticker_list) #4043是最开始的单价
     total = np.sum([accounts,positions],axis=0)
 
-    plt.plot(np.arange(T*episode_set),total)
-    plt.ylabel('Account')
-    plt.xlabel('time')
+    # 总资产
+    plt.plot(np.arange(len(total)),total)
+    plt.ylabel('total')
+    plt.xlabel('step')
     plt.show()
+
+    # 余额
+    plt.plot(np.arange(len(account_list)),account_list)
+    plt.ylabel('account')
+    plt.xlabel('step')
+    plt.show()
+
+    # 库存
+    plt.plot(np.arange(len(position_list)),position_list)
+    plt.ylabel('position')
+    plt.xlabel('step')
+    plt.show()
+
+    p = np.array(position_list)
+    print(p.min())
+    print(p.max())
+    print(p.std())
+    print(p.sum()/len(p))
+    
+    print(accounts.min())
+    print(accounts.max())
+    print(accounts[-1])
+
