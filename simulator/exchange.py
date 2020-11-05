@@ -132,7 +132,8 @@ class Exchange(object):
         asks_execution = list()
         for bid_order in bid_orders:
             if bid_order[PRICE] >= self.ticker:  #现价击穿买单价
-                account -= bid_order[PRICE] * bid_order[VOLUME]
+                # account -= bid_order[PRICE] * bid_order[VOLUME]
+                account -= self.ticker * bid_order[VOLUME]
                 position += bid_order[VOLUME]
                 # print(f"bid_order execution,price:{bid_order[PRICE]},account:{bid_order[VOLUME]}")
                 bids_execution.append((bid_order[PRICE],bid_order[VOLUME]))
