@@ -7,8 +7,7 @@ tf.disable_v2_behavior()
  
 np.random.seed(1)
 tf.set_random_seed(1)
- 
-tf.reset_default_graph()
+
 # Deep Q Network off-policy
 class DeepQNetwork:
     def __init__(
@@ -23,6 +22,7 @@ class DeepQNetwork:
             batch_size=32,
             e_greedy_increment=None,
             output_graph=False,
+            reset=True
     ):
         self.n_actions = n_actions 
         self.n_features = n_features
@@ -42,6 +42,8 @@ class DeepQNetwork:
         self.memory = np.zeros((self.memory_size, n_features * 2 + 2))
  
         # consist of [target_net, evaluate_net]
+        if reset:
+            tf.reset_default_graph()
         self._build_net()
         #tf.get_collection(key, scope=None) 
         #用来获取一个名称是‘key’的集合中的所有元素，返回的是一个列表

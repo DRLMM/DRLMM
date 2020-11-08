@@ -8,9 +8,9 @@ import matplotlib.pyplot as plt
 
 
 T = 2000 #步数
-episode_set = 2
+episode_set = 1
  
-def run():
+def run(env,RL):
     step = 0
     for episode in range(episode_set):
         print(episode)
@@ -80,7 +80,7 @@ if __name__ == "__main__":
                         memory_size=2000,
                         # output_graph=True
                         )
-        run()
+        run(env,RL)
         RL.plot_cost()
 
         bid_count = env.Ag_exchange.bid_count
@@ -88,7 +88,7 @@ if __name__ == "__main__":
         clear_count = env.Ag_exchange.clear_count
         # 画图
         accounts = np.array(account_list)
-        positions = np.array(position_list)*np.array(ticker_list) #4043是最开始的单价
+        positions = np.array(position_list)*np.array(ticker_list)
         total = np.sum([accounts,positions],axis=0)
 
         # 总资产
