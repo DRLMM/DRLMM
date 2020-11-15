@@ -16,7 +16,7 @@ SELLALL = "SELLALL"
 
 class MarketMaking(object):
     
-    def __init__(self,config,folder_path,agent_state):
+    def __init__(self,config,folder_path,agent_state,damping_factor):
         self.init_account = agent_state['account']
         self.init_position = agent_state['position']
         self.n_actions = 10
@@ -26,7 +26,7 @@ class MarketMaking(object):
         self.Ag_exchange.init_exchange()
         self.Ag_exchange.init_agent(self.init_account,self.init_position)
         self.state = State(config)
-        self.rewards = Reward(config)
+        self.rewards = Reward(config,damping_factor)
         
     def reset(self):
         

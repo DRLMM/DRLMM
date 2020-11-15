@@ -7,7 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-T = 2000 #步数
+T = 200 #步数
 episode_set = 1
  
 def run(env,RL):
@@ -66,11 +66,11 @@ if __name__ == "__main__":
     n_features = int(cf['state']['state_size'])
     n_actions = int(cf['learning']['action_size'])
     
-    for i in range(5):
+    for i in [0.3,0.5]:
         account_list = list()
         position_list =list()  
         ticker_list = list()
-        env =  MarketMaking(cf,'data/Ag(T+D)_SGE_TickData_202003/',{'account':1000000,'position':50})
+        env =  MarketMaking(cf,'data/Ag(T+D)_SGE_TickData_202003/',{'account':1000000,'position':50},damping_factor=i)
         
         RL = DeepQNetwork(n_actions, n_features,
                         learning_rate=0.01,
@@ -86,12 +86,14 @@ if __name__ == "__main__":
         bid_count = env.Ag_exchange.bid_count
         ask_count = env.Ag_exchange.ask_count
         clear_count = env.Ag_exchange.clear_count
+
         # 画图
         accounts = np.array(account_list)
         positions = np.array(position_list)*np.array(ticker_list)
         total = np.sum([accounts,positions],axis=0)
+        p = np.array(position_list)
 
-        # 总资产
+        # # 总资产
         plt.plot(np.arange(len(total)),total)
         plt.ylabel('total')
         plt.xlabel('step')
@@ -109,26 +111,48 @@ if __name__ == "__main__":
         plt.xlabel('step')
         plt.show()
 
-        p = np.array(position_list)
-        print(p.min())
-        print(p.max())
-        print(p.std())
-        print(p.sum()/len(p))
-        print(p[-1])
+        # print(p.min())
+        # print(p.max())
+        # print(p.std())
+        # print(p.sum()/len(p))
+        # print(p[-1])
         
-        print(accounts.min())
-        print(accounts.max())
-        print(accounts.std())
-        print(accounts.sum()/len(accounts))
-        print(accounts[-1])
+        # print(accounts.min())
+        # print(accounts.max())
+        # print(accounts.std())
+        # print(accounts.sum()/len(accounts))
+        # print(accounts[-1])
 
-        print(total.min())
-        print(total.max())
-        print(total.std())
-        print(total.sum()/len(total))
-        print(total[-1])
+        # print(total.min())
+        # print(total.max())
+        # print(total.std())
+        # print(total.sum()/len(total))
+        # print(total[-1])
 
         acc_list.append(accounts)
         pos_list.append(p)
         total_list.append(total)
 
+    acc_std_list = [x.std() for x in acc_list]
+    print('acc_std_list=',acc_std_list)
+    acc_ave_list = [x.sum()/len(x) for x in acc_list]
+    print('acc_ave_list=',acc_ave_list)
+
+    pos_std_list = [x.std() for x in pos_list]
+    print('pos_std_list=',pos_std_list)
+    pos_ave_list = [x.sum()/len(x) for x in pos_list]
+    print('pos_ave_list=',pos_ave_list)
+    total_max_list = [x.max() for x in total_list]
+    print('total_max_list=',total_max_list)
+    total_min_list = [x.min() for x in total_list]
+    print('total_min_list=',total_min_list)
+    pos_max_list = [x.max() for x in pos_list]
+    pos_min_list = [x.min() for x in pos_list]
+    print('pos_max_list=',pos_max_list)
+    print('pos_min_list=',pos_min_list)
+    acc_max_list = [x.max() for x in acc_list]
+    print('acc_max_list=',acc_max_list)
+    acc_min_list = [x.min() for x in acc_list]
+    print('acc_min_list=',acc_max_list)
+    total_end_list = [x[-1] for x in total_list]
+    print('total_end_list=',total_end_list)

@@ -11,10 +11,14 @@ import numpy as np
 
 class Reward(object):
     
-    def __init__(self,config):
+    def __init__(self,config,damping_factor=None):
         
         self.reward_measure = config['reward']['reward_measure']
-        self.damping_factor = float(config['reward']['damping_factor'])
+        if damping_factor:
+            self.damping_factor = damping_factor
+        else:
+            self.damping_factor = float(config['reward']['damping_factor'])
+        print('damping_factor ',damping_factor)
         self.reward = 0
         
     def get_reward(self,ask_quote_price,ask_volume,bid_quote_price,bid_volume,inventory,midprice,last_midprice):
