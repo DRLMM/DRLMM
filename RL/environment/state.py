@@ -10,8 +10,8 @@ class State():
     
     def __init__(self,config):
         
-        #self.seq = ['pos','a_dist','b_dist','spd','mpm','imb','vol','rsi']
-        self.seq = ['pos','a_dist','b_dist']
+        self.seq = ['pos','a_dist','b_dist','spd','mpm','imb','vol','rsi']
+        # self.seq = ['pos','a_dist','b_dist']
         self.state_dict = dict.fromkeys(self.seq,0)
         self.volatility = list()
         self.vlt_lookback = int(config['state']['vlt_lookback'])

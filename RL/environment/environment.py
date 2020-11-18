@@ -86,15 +86,15 @@ class MarketMaking(object):
         # new state
         self.state.get_pos(inventory)
 # =============================================================================
-#         self.state.get_mpm(midprice,last_midprice)
-#         self.state.get_spd(ask_price,bid_price)
-#         self.state.get_imb(total_ask_volume,total_bid_volume)
+        self.state.get_mpm(midprice,last_midprice)
+        self.state.get_spd(ask_price,bid_price)
+        self.state.get_imb(total_ask_volume,total_bid_volume)
 # =============================================================================
         self.state.get_a_dist(ask_quote,ask_price)
         self.state.get_b_dist(bid_quote,bid_price)
 # =============================================================================
-#         self.state.get_vol(ask_price,bid_price)
-#         self.state.get_rsi(midprice,last_midprice)
+        self.state.get_vol(ask_price,bid_price)
+        self.state.get_rsi(midprice,last_midprice)
 # =============================================================================
         
         next_state = np.array(list(self.state.get_state()))

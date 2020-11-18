@@ -66,7 +66,7 @@ if __name__ == "__main__":
     n_features = int(cf['state']['state_size'])
     n_actions = int(cf['learning']['action_size'])
     
-    for i in [0.3,0.5]:
+    for i in [0.5]:
         account_list = list()
         position_list =list()  
         ticker_list = list()
