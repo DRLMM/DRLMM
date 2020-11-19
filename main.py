@@ -6,6 +6,12 @@ from RL.environment.config import config
 import numpy as np
 import matplotlib.pyplot as plt
 
+def choose_action_random(n_actions):
+    """
+    choose action randomly
+    """
+    return np.random.randint(0, n_actions)
+
 
 T = 2000 #步数
 episode_set = 2
@@ -15,11 +21,7 @@ def run(env,RL):
     for episode in range(episode_set):
         print(episode)
         # initial observation
-        if step == 0:
-            observation = env.reset()
         time = 0
-        init_price = env.Ag_exchange.ticker #初始单价
-        print(init_price)
  
         while True:
             time += 1
@@ -27,7 +29,7 @@ def run(env,RL):
             env.render()
             # RL choose action based on observation
             # action = RL.choose_action(observation)
-            action = RL.choose_action_random()
+            action = choose_action_random(n_actions)
             done = env.step_random(action)
             #print("action",action)
             # RL take action and get next observation and reward
@@ -74,16 +76,17 @@ if __name__ == "__main__":
         ticker_list = list()
         env =  MarketMaking(cf,'data/Ag(T+D)_SGE_TickData_202003/',{'account':1000000,'position':50},damping_factor=i)
         
-        RL = DeepQNetwork(n_actions, n_features,
-                        learning_rate=0.01,
-                        reward_decay=0.9,
-                        e_greedy=0.9,
-                        replace_target_iter=200,
-                        memory_size=2000,
-                        # output_graph=True
-                        )
+        # RL = DeepQNetwork(n_actions, n_features,
+        #                 learning_rate=0.01,
+        #                 reward_decay=0.9,
+        #                 e_greedy=0.9,
+        #                 replace_target_iter=200,
+        #                 memory_size=2000,
+        #                 # output_graph=True
+        #                 )
+        RL = None
         run(env,RL)
-        RL.plot_cost()
+        # RL.plot_cost()
 
         bid_count = env.Ag_exchange.bid_count
         ask_count = env.Ag_exchange.ask_count
