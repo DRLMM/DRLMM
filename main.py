@@ -26,7 +26,8 @@ def run(env,RL):
             # fresh env
             env.render()
             # RL choose action based on observation
-            action = RL.choose_action(observation)
+            # action = RL.choose_action(observation)
+            action = RL.choose_action_random()
             #print("action",action)
             # RL take action and get next observation and reward
             observation_, reward, done = env.step(observation,action)

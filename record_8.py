@@ -1,0 +1,12 @@
+# pnl_adamped 0.5 8_state  
+acc_std_list= [499958.8066778086]
+acc_ave_list= [685777.0269556496]
+pos_std_list= [143.03005332289771]
+pos_ave_list= [190.42272139906532]
+total_max_list= [1570427.5]
+total_min_list= [1174930.5]
+pos_max_list= [450]
+pos_min_list= [0]
+acc_max_list= [1565591.5]
+acc_min_list= [1565591.5]
+total_end_list= [1544955.5]

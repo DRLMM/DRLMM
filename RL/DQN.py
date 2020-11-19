@@ -118,6 +118,12 @@ class DeepQNetwork:
         self.memory[index, :] = transition
  
         self.memory_counter += 1
+
+    def choose_action_random(self):
+        """
+        choose action randomly
+        """
+        return np.random.randint(0, self.n_actions)
  
     def choose_action(self, observation):
         # to have batch dimension when feed into tf placeholder
