@@ -38,6 +38,35 @@ class MarketMaking(object):
         self.Ag_exchange.init_agent(self.init_account,self.init_position)
         #init_action = np.random.randint(0,10)
         return init_state
+
+    def step_random(self,action_id):
+        act = Action(action_id)
+        if act == 9:
+            ask_quote,bid_quote = act.get_order_quote(ask_price,bid_price)
+            ask_volume = self.Ag_exchange.position
+            bid_volume = 0
+            self.Ag_exchange.send_action(ASK,0,ask_volume)
+            print("SELLALL")
+        else:
+            ask_price,bid_price =  self.Ag_exchange.get_first_price()
+            ask_quote,bid_quote = act.get_order_quote(ask_price,bid_price)
+            ask_volume = self.ORDER_SIZE
+            bid_volume = self.ORDER_SIZE
+        
+            self.Ag_exchange.send_action(ASK,ask_quote,ask_volume)
+            self.Ag_exchange.send_action(BID,bid_quote,bid_volume)
+        
+        bids_execution,asks_execution = self.Ag_exchange.update_state()
+
+        if self.Ag_exchange.dataHandler.end:
+            next_state = None
+            reward = None
+            is_terminal = True
+            return next_state,reward,is_terminal
+
+        is_terminal = False
+   
+        return is_terminal
     
     def step(self,state,action_id):
         """

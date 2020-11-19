@@ -7,8 +7,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-T = 200 #步数
-episode_set = 1
+T = 2000 #步数
+episode_set = 2
  
 def run(env,RL):
     step = 0
@@ -28,25 +28,26 @@ def run(env,RL):
             # RL choose action based on observation
             # action = RL.choose_action(observation)
             action = RL.choose_action_random()
+            done = env.step_random(action)
             #print("action",action)
             # RL take action and get next observation and reward
-            observation_, reward, done = env.step(observation,action)
+            # observation_, reward, done = env.step(observation,action)
 
             if done:
                 print("No more data")
                 return None
             #print(observation)
             # print(reward)
-            RL.store_transition(observation, action, reward, observation_)
+            # RL.store_transition(observation, action, reward, observation_)
             account_list.append(env.Ag_exchange.account)
             position_list.append(env.Ag_exchange.position)
             ticker_list.append(env.Ag_exchange.ticker)
  
-            if (step > 200) and (step % 5 == 0):
-                RL.learn()
+            # if (step > 200) and (step % 5 == 0):
+            #     RL.learn()
                 # print(env.Ag_exchange.account,env.Ag_exchange.position,env.Ag_exchange.account+env.Ag_exchange.position*4043)
             # swap observation
-            observation = observation_
+            # observation = observation_
             # break while loop when end of this episode
             if time == T:
                 break
